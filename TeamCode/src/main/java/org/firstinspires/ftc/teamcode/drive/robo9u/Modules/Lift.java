@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.LiftController;
+import org.firstinspires.ftc.teamcode.drive.LiftControllerOld;
 
 @Config
 public class Lift {
@@ -19,11 +19,11 @@ public class Lift {
     }
     public LiftState liftState = LiftState.Idle;
 
-    private ElapsedTime fourbarTimer;
+    private ElapsedTime singlebarTimer;
 
     public TouchSensor liftSensor;
-    public LiftController lift;
-    public FourBar fourBar;
+    public LiftControllerOld lift;
+    public SingleBar singleBar;
     public static double ground = 0, low = 23, mid = 46 , high = 71, stackConeDist = 3.25, stackPos;
 
     private boolean manualControl = false;
@@ -34,7 +34,7 @@ public class Lift {
 
     public void setLiftState(LiftState state){
         liftState = state;
-        fourbarTimer.reset();
+        singlebarTimer.reset();
     }
 
     public void setPower(double power){
@@ -58,26 +58,26 @@ public class Lift {
         switch (liftState){
             case High:
                 lift.setTarget(high+ground);
-                if(fourbarTimer.milliseconds()>=125)
-                    fourBar.up();
+                if(singlebarTimer.milliseconds()>=125)
+                    singleBar.Back();
                 break;
             case Mid:
                 lift.setTarget(mid+ground);
-                if(fourbarTimer.milliseconds()>=125)
-                    fourBar.up();
+                if(singlebarTimer.milliseconds()>=125)
+                    singleBar.Back();
                 break;
             case Low:
                 lift.setTarget(low+ground);
-                if(fourbarTimer.milliseconds()>=125)
-                    fourBar.up();
+                if(singlebarTimer.milliseconds()>=125)
+                    singleBar.Back();
                 break;
             case Ground:
                 lift.setTarget(ground);
-                fourBar.down();
+                singleBar.Front();
                 break;
             case STACK:
                 lift.setTarget(stackConeDist*stackPos + 0.2+ground);
-                fourBar.down();
+                singleBar.Front();
                 break;
             case Idle:
                 break;
@@ -85,18 +85,18 @@ public class Lift {
         if(liftSensor.isPressed()){
                 if(liftState == LiftState.Idle)
                     lift.stop();
-                ground = LiftController.encoderTicksToCM(lift.getCurrentPosition());
+                ground = LiftControllerOld.encoderTicksToCM(lift.getCurrentPosition());
         }
         if(!manualControl)
             lift.update();
     }
 
     public Lift(HardwareMap hw){
-        lift = new LiftController(hw, true);
-        fourBar = new FourBar(hw);
+        lift = new LiftControllerOld(hw, true);
+        singleBar = new SingleBar(hw);
         liftSensor = hw.get(TouchSensor.class, "senzoratingere");
         stackPos = 5;
-        fourbarTimer = new ElapsedTime();
-        fourbarTimer.reset();
+        singlebarTimer = new ElapsedTime();
+        singlebarTimer.reset();
     }
 }

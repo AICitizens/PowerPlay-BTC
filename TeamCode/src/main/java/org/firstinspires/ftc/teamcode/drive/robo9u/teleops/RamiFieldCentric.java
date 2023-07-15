@@ -33,7 +33,7 @@ public class RamiFieldCentric extends LinearOpMode {
 
         drive.setPoseEstimate(SampleMecanumDrive.lastAutonomousPosition);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        mecanisme.lift.fourBar.down();
+        mecanisme.lift.singleBar.Front();
         mecanisme.claw.Open();
 
         PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -71,9 +71,9 @@ public class RamiFieldCentric extends LinearOpMode {
             mecanisme.claw.Open();
         }
         if(gamepad1.dpad_down){
-            mecanisme.lift.fourBar.down();
+            mecanisme.lift.singleBar.Front();
         }else if(gamepad1.dpad_up) {
-            mecanisme.lift.fourBar.up();
+            mecanisme.lift.singleBar.Back();
         }
         if(gamepad1.dpad_left || gamepad1.dpad_right){
             mecanisme.claw.dropConeAndKeepBeacon();
