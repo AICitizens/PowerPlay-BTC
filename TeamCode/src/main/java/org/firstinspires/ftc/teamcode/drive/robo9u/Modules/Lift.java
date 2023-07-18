@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.LiftControllerOld;
+import org.firstinspires.ftc.teamcode.drive.LiftController;
 
 @Config
 public class Lift {
@@ -20,9 +20,7 @@ public class Lift {
     public LiftState liftState = LiftState.Idle;
 
     private ElapsedTime singlebarTimer;
-
-    public TouchSensor liftSensor;
-    public LiftControllerOld lift;
+    public LiftController lift;
     public SingleBar singleBar;
     public static double ground = 0, low = 23, mid = 46 , high = 71, stackConeDist = 3.25, stackPos;
 
@@ -43,7 +41,7 @@ public class Lift {
         if(power==0) return;
         liftState = LiftState.Idle;
         manualControl = true;
-        lift.setPower(liftSensor.isPressed()?Math.max(power, 0):power);
+        lift.setPower(lift.getCurrentPosition()<5?Math.max(power, 0):power);
         lift.stop();
     }
 
@@ -82,19 +80,18 @@ public class Lift {
             case Idle:
                 break;
         }
-        if(liftSensor.isPressed()){
+        if(lift.getCurrentPosition()<5){
                 if(liftState == LiftState.Idle)
                     lift.stop();
-                ground = LiftControllerOld.encoderTicksToCM(lift.getCurrentPosition());
+                ground = LiftController.encoderTicksToCM(lift.getCurrentPosition());
         }
         if(!manualControl)
             lift.update();
     }
 
     public Lift(HardwareMap hw){
-        lift = new LiftControllerOld(hw, true);
+        lift = new LiftController(hw, true);
         singleBar = new SingleBar(hw);
-        liftSensor = hw.get(TouchSensor.class, "senzoratingere");
         stackPos = 5;
         singlebarTimer = new ElapsedTime();
         singlebarTimer.reset();

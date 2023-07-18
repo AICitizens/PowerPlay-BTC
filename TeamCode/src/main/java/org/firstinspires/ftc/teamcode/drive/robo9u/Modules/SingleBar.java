@@ -17,21 +17,21 @@ public class SingleBar {
     }
 
     public void Front(){
-        leftServo.setPosition(0);
-        rightServo.setPosition(1);
-        wristServo.setPosition(0);
+        leftServo.setPosition(0.125);
+        rightServo.setPosition(0.875);
+        wristServo.setPosition(0.15);
     }
 
     public void Up(){
-        leftServo.setPosition(0.5);
-        rightServo.setPosition(0.5);
-        wristServo.setPosition(0.5);
+        leftServo.setPosition(3.0/6);
+        rightServo.setPosition(3.0/6);
+        wristServo.setPosition(3.0/6);
     }
 
     public void Back(){
-        leftServo.setPosition(1);
-        rightServo.setPosition(0);
-        wristServo.setPosition(1);
+        leftServo.setPosition(0.85);
+        rightServo.setPosition(0.125);
+        wristServo.setPosition(0.875);
     }
 
 }

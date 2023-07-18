@@ -39,19 +39,19 @@ drive.imu.startImuThread(this);
         telemetry.update();
 
         while (!isStopRequested()) {
-            drive.leftFront.setPower(1);
+            drive.leftFront.setPower(0.5);
             sleep(1000);
             drive.leftFront.setPower(0);
             sleep(1000);
-            drive.rightFront.setPower(1);
+            drive.rightFront.setPower(0.5);
             sleep(1000);
             drive.rightFront.setPower(0);
             sleep(1000);
-            drive.leftRear.setPower(1);
+            drive.leftRear.setPower(0.5);
             sleep(1000);
             drive.leftRear.setPower(0);
             sleep(1000);
-            drive.rightRear.setPower(1);
+            drive.rightRear.setPower(0.5);
             sleep(1000);
             drive.rightRear.setPower(0);
             sleep(1000);
