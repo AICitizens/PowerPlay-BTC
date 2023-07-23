@@ -17,10 +17,10 @@ import java.util.List;
 public class LiftController {
     private PIDFController controller;
 
-    public static final double TICKS_PER_REV = 28*5.23;
+    public static final double TICKS_PER_REV = 28*8.3521;
     public static double WHEEL_RADIUS = 1; // cm
-    public static double GEAR_RATIO = 3.6692506460; // output (wheel) speed / input (motor) speed
-    public static double kp = 0, ki = 0, kd = 0, ff = 0.00024, relativeP = 0;
+    public static double GEAR_RATIO = 1.8163; // output (wheel) speed / input (motor) speed
+    public static double kp = 0.013, ki = 0, kd = 0.0005, ff = 0.00004, relativeP = 0.0005;
     public static double target = 0; //ticks
 
     private boolean canOverride = true;
@@ -32,7 +32,8 @@ public class LiftController {
 
     public LiftController(HardwareMap hw, boolean resetEncoders) {
         controller = new PIDFController(kp, ki, kd, ff);
-        controller.setTolerance(30);
+        controller.setTolerance(20
+        );
 
         left = hw.get(DcMotorEx.class, "liftLeft");
         right = hw.get(DcMotorEx.class, "liftRight");
@@ -46,7 +47,7 @@ public class LiftController {
         }
 
         right.setDirection(DcMotorEx.Direction.FORWARD);
-        left.setDirection(DcMotorEx.Direction.FORWARD);
+        left.setDirection(DcMotorEx.Direction.REVERSE);
 
         if(!resetEncoders) return;
         for(DcMotorEx motor : motors) {

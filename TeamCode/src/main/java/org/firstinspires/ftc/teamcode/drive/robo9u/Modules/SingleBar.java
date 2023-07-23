@@ -17,9 +17,9 @@ public class SingleBar {
     }
 
     public void Front(){
-        leftServo.setPosition(0.125);
-        rightServo.setPosition(0.875);
-        wristServo.setPosition(0.15);
+        leftServo.setPosition(0.875);
+        rightServo.setPosition(0.125);
+        wristServo.setPosition(0.20);
     }
 
     public void Up(){
@@ -29,9 +29,9 @@ public class SingleBar {
     }
 
     public void Back(){
-        leftServo.setPosition(0.85);
-        rightServo.setPosition(0.125);
-        wristServo.setPosition(0.875);
+        leftServo.setPosition(0.25);
+        rightServo.setPosition(0.75);
+        wristServo.setPosition(0.82);
     }
 
 }

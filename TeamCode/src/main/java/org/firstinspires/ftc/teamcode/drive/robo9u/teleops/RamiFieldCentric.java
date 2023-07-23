@@ -20,7 +20,7 @@ public class RamiFieldCentric extends LinearOpMode {
     private ElapsedTime runtime;
 
     Boolean lastRightStickButton = false;
-    double drivepow = 1;
+    double drivepow = 0.9;
 
     public void initialize()
     {
