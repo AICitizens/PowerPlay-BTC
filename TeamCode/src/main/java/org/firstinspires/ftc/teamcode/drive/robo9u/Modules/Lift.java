@@ -22,7 +22,7 @@ public class Lift {
     private ElapsedTime singlebarTimer;
     public LiftController lift;
     public SingleBar singleBar;
-    public static double ground = 0, low = 23, mid = 46 , high = 71, stackConeDist = 3.25, stackPos;
+    public static double ground = 0, low = 16, mid = 42 , high = 68, stackConeDist = 3.57, stackPos;
 
     private boolean manualControl = false;
 

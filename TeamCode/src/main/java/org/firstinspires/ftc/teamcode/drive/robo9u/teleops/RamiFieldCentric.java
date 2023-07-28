@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.robo9u.teleops;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -24,8 +26,6 @@ public class RamiFieldCentric extends LinearOpMode {
 
     public void initialize()
     {
-        
-
         drive = new SampleMecanumDrive(hardwareMap);
         drive.imu.startImuThread(this);
         mecanisme = new Mechanisms(hardwareMap);
@@ -36,10 +36,10 @@ public class RamiFieldCentric extends LinearOpMode {
         mecanisme.lift.singleBar.Front();
         mecanisme.claw.Open();
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         PhotonCore.experimental.setMaximumParallelCommands(8);
         PhotonCore.enable();
-        PhotonCore.CONTROL_HUB.clearBulkCache();
+        PhotonCore.EXPANSION_HUB.clearBulkCache();
     }
 
     public void updateDrivePowers()
@@ -109,15 +109,21 @@ public class RamiFieldCentric extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         waitForStart();
+        ElapsedTime ept = new ElapsedTime(0);
+        ept.reset();
         while(!isStopRequested() && opModeIsActive())
         {
-            PhotonCore.CONTROL_HUB.clearBulkCache();
+            PhotonCore.EXPANSION_HUB.clearBulkCache();
             updateDrivePowers();
             updateClaw();
             updateLift();
             mecanisme.update();
             drive.update();
             updatetelemetry();
+            TelemetryPacket tp = new TelemetryPacket();
+            tp.put("CYCLETIME", ept.milliseconds());
+            ept.reset();
+            FtcDashboard.getInstance().sendTelemetryPacket(tp);
         }
     }
 }

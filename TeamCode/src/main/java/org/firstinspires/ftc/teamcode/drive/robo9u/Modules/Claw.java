@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Claw {
     public static ElapsedTime elapsedTimer;
     public static boolean shouldClose = false;
-    public static double closed = 0.96,  open = 0.73, timetoclose = 63;
+    public static double closed = 0.44,  open = 0.275, timetoclose = 63;
 
     public Servo servo = null;
 
