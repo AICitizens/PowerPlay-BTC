@@ -6,18 +6,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.ModdedHardware.SafeServo;
 
 @Config
-public class Claw {
-    public static double closedPosition = 0.44,  openPosition = 0.275;
-
+public class ConeAligner {
+    public static double down = 0.4,  up = 0.6;
     SafeServo SafeServo;
 
-    Claw(HardwareMap hw){
+    ConeAligner(HardwareMap hw){
         SafeServo = new SafeServo(hw, "Gripper");
     }
-    public void Close(){
-        SafeServo.setPosition(closedPosition);
+    public void Down(){
+        SafeServo.setPosition(down);
     }
-    public void Open(){
-        SafeServo.setPosition(openPosition);
+    public void Up(){
+        SafeServo.setPosition(up);
     }
 }

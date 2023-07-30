@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.robo9u.Modules;
+package org.firstinspires.ftc.teamcode.ModdedHardware;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -29,6 +29,9 @@ public class ThreadedIMU {
                 }
             }).start();
         }
+    }
+    public void resetYaw(){
+        imu.resetYaw();
     }
     public double getYaw(){
         return imuYaw;

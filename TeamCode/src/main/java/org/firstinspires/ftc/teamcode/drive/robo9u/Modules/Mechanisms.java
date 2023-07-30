@@ -7,14 +7,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Mechanisms {
     public Claw claw;
     public Lift lift;
+    public ConeAligner coneAligner;
 
     public void update(){
-        claw.update();
         lift.update();
     }
 
     public Mechanisms(HardwareMap hw)
     {
+        coneAligner = new ConeAligner(hw);
         claw = new Claw(hw);
         lift = new Lift(hw);
     }

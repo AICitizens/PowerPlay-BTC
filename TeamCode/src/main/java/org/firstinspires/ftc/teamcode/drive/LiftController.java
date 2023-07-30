@@ -2,20 +2,19 @@ package org.firstinspires.ftc.teamcode.drive;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.ModdedHardware.SafeMotor;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Config
 public class LiftController {
-    private PIDFController controller;
+    private final PIDFController controller;
 
     public static final double TICKS_PER_REV = 28*8.3521;
     public static double WHEEL_RADIUS = 1; // cm
@@ -27,20 +26,18 @@ public class LiftController {
 
     private Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
 
-    public DcMotorEx left, right;
-    private List<DcMotorEx> motors;
+    public SafeMotor left, right;
 
     public LiftController(HardwareMap hw, boolean resetEncoders) {
         controller = new PIDFController(kp, ki, kd, ff);
-        controller.setTolerance(20
-        );
+        controller.setTolerance(20);
 
-        left = hw.get(DcMotorEx.class, "liftLeft");
-        right = hw.get(DcMotorEx.class, "liftRight");
+        left = new SafeMotor(hw, "liftLeft");
+        right = new SafeMotor(hw, "liftRight");
 
-        motors = Arrays.asList(left, right);
+        List<SafeMotor> motors = Arrays.asList(left, right);
 
-        for(DcMotorEx motor : motors) {
+        for(SafeMotor motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
             motor.setMotorType(motorConfigurationType);
@@ -50,7 +47,7 @@ public class LiftController {
         left.setDirection(DcMotorEx.Direction.REVERSE);
 
         if(!resetEncoders) return;
-        for(DcMotorEx motor : motors) {
+        for(SafeMotor motor : motors) {
             motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         }
@@ -90,7 +87,7 @@ public class LiftController {
         telemetry.addData("leftPos", left.getCurrentPosition());
         telemetry.addData("pos2", getCurrentPosition());
         telemetry.addData("pos", encoderTicksToCM(getCurrentPosition()));
-        telemetry.update();
+        //telemetry.update();
         if(controller.atSetPoint()){
             canOverride = true;
         }

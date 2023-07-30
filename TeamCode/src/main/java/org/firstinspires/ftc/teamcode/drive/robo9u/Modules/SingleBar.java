@@ -2,18 +2,17 @@ package org.firstinspires.ftc.teamcode.drive.robo9u.Modules;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.ModdedHardware.SafeServo;
 
 @Config
 public class SingleBar {
-    public static double up = 0.26;
-    public static double down = 0.02;
-    public Servo leftServo, rightServo, wristServo;
+    public SafeServo leftServo, rightServo, wristServo;
 
     SingleBar(HardwareMap hw){
-        leftServo=hw.get(Servo.class,"rightLiftServo") ;
-        rightServo=hw.get(Servo.class,"leftLiftServo") ;
-        wristServo=hw.get(Servo.class, "wristServo");
+        leftServo=hw.get(SafeServo.class,"rightLiftServo") ;
+        rightServo=hw.get(SafeServo.class,"leftLiftServo") ;
+        wristServo=hw.get(SafeServo.class, "wristServo");
     }
 
     public void Front(){
@@ -23,9 +22,9 @@ public class SingleBar {
     }
 
     public void Up(){
-        leftServo.setPosition(3.0/6);
-        rightServo.setPosition(3.0/6);
-        wristServo.setPosition(3.0/6);
+        leftServo.setPosition(0.5);
+        rightServo.setPosition(0.5);
+        wristServo.setPosition(0.5);
     }
 
     public void Back(){
