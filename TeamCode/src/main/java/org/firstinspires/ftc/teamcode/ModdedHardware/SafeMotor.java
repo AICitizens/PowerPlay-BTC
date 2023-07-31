@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 public class SafeMotor {
     public DcMotorEx motor;
     private double motorPower = -2;
@@ -18,6 +20,10 @@ public class SafeMotor {
             motorPower = power;
             motor.setPower(power);
         }
+    }
+
+    public double getCurrent(CurrentUnit unit){
+        return motor.getCurrent(unit);
     }
 
     public int getCurrentPosition(){

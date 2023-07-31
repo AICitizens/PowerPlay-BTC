@@ -11,7 +11,7 @@ public class ConeAligner {
     SafeServo SafeServo;
 
     ConeAligner(HardwareMap hw){
-        SafeServo = new SafeServo(hw, "Gripper");
+        SafeServo = new SafeServo(hw, "ConeAligner");
     }
     public void Down(){
         SafeServo.setPosition(down);

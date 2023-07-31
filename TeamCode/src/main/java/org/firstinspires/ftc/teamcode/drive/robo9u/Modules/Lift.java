@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.drive.LiftController;
 
 @Config
@@ -14,7 +15,8 @@ public class Lift {
         Mid,
         Low,
         Ground,
-        STACK,
+        Defence,
+        Stack,
         Idle,
     }
     public LiftState liftState = LiftState.Idle;
@@ -22,7 +24,7 @@ public class Lift {
     private ElapsedTime singlebarTimer;
     public LiftController lift;
     public SingleBar singleBar;
-    public static double ground = 1, low = 16, mid = 42 , high = 68, stackConeDist = 3.55, stackPos;
+    public static double ground = 1, low = 17, mid = 43 , high = 69, stackConeDist = 3.55, stackPos;
 
     private boolean manualControl = false;
 
@@ -49,48 +51,44 @@ public class Lift {
         if(stackPos == 0)
             stackPos = 5;
         stackPos -=1;
-        liftState = LiftState.STACK;
+        liftState = LiftState.Stack;
     }
 
     public void update(){
         switch (liftState){
             case High:
-                lift.setTarget(high+ground);
-                if(singlebarTimer.milliseconds()>=125)
-                    singleBar.Back();
+                lift.setTarget(high);
+                singleBar.Back();
                 break;
             case Mid:
-                lift.setTarget(mid+ground);
-                if(singlebarTimer.milliseconds()>=125)
-                    singleBar.Back();
+                lift.setTarget(mid);
+                singleBar.Back();
                 break;
             case Low:
-                lift.setTarget(low+ground);
-                if(singlebarTimer.milliseconds()>=125)
-                    singleBar.Back();
+                lift.setTarget(low);
+                singleBar.Back();
                 break;
             case Ground:
                 lift.setTarget(ground);
                 singleBar.Front();
                 break;
-            case STACK:
+            case Defence:
+                lift.setTarget(ground);
+                singleBar.Up();
+                break;
+            case Stack:
                 lift.setTarget(stackConeDist*stackPos + 0.2+ground);
                 singleBar.Front();
                 break;
             case Idle:
                 break;
         }
-        if(lift.getCurrentPosition()<5){
-                if(liftState == LiftState.Idle)
-                    lift.stop();
-                ground = LiftController.encoderTicksToCM(lift.getCurrentPosition());
-        }
         if(!manualControl)
             lift.update();
     }
 
     public Lift(HardwareMap hw){
-        lift = new LiftController(hw, true);
+        lift = new LiftController(hw);
         singleBar = new SingleBar(hw);
         stackPos = 5;
         singlebarTimer = new ElapsedTime();

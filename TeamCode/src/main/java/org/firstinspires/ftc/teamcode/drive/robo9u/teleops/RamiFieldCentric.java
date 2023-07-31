@@ -61,6 +61,8 @@ public class RamiFieldCentric extends LinearOpMode {
         }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
             mecanisme.coneAligner.Down();
         }
+        if(gamepadEx.wasJustPressed(GamepadKeys.Button.BACK))
+            mecanisme.lift.setLiftState(Lift.LiftState.Defence);
     }
 
     public void updateLift() {

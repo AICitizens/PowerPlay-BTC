@@ -11,7 +11,7 @@ public class LiftCalibrate extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        lift = new LiftController(hardwareMap, true);
+        lift = new LiftController(hardwareMap);
         waitForStart();
         while(!isStopRequested() && opModeIsActive()){
             lift.update();

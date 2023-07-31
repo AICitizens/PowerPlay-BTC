@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive;
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.ModdedHardware.SafeMotor;
 
 import java.util.Arrays;
@@ -21,21 +20,19 @@ public class LiftController {
     public static double GEAR_RATIO = 1.8163; // output (wheel) speed / input (motor) speed
     public static double kp = 0.013, ki = 0, kd = 0.0005, ff = 0.00004, relativeP = 0.0005;
     public static double target = 0; //ticks
+    public static double MAX_TARGET = 2000, MAX_CURRENT = 8;
 
     private boolean canOverride = true;
 
-    private Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
-
     public SafeMotor left, right;
+    List<SafeMotor> motors = Arrays.asList(left, right);
 
-    public LiftController(HardwareMap hw, boolean resetEncoders) {
+    public LiftController(HardwareMap hw) {
         controller = new PIDFController(kp, ki, kd, ff);
-        controller.setTolerance(20);
+        controller.setTolerance(15);
 
         left = new SafeMotor(hw, "liftLeft");
         right = new SafeMotor(hw, "liftRight");
-
-        List<SafeMotor> motors = Arrays.asList(left, right);
 
         for(SafeMotor motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -45,12 +42,6 @@ public class LiftController {
 
         right.setDirection(DcMotorEx.Direction.FORWARD);
         left.setDirection(DcMotorEx.Direction.REVERSE);
-
-        if(!resetEncoders) return;
-        for(SafeMotor motor : motors) {
-            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        }
     }
 
     public boolean isBusy(){
@@ -70,7 +61,21 @@ public class LiftController {
         target = getCurrentPosition();
     }
 
+    double lastPos = 0;
     public void update(){
+        double deltaPos = getCurrentPosition()-lastPos;
+        if(left.getCurrent(CurrentUnit.AMPS)+right.getCurrent(CurrentUnit.AMPS) > MAX_CURRENT) {
+            if(deltaPos < 0) {
+                target = 0;
+                for (SafeMotor motor : motors) {
+                    motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+                    motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            }else {
+                MAX_TARGET = target;
+                target = getCurrentPosition()-deltaPos;
+            }
+        }
         controller.setPIDF(kp, ki, kd, ff);
         double leftPower, rightPower;
         double motorRelativeError = Math.abs(left.getCurrentPosition()-right.getCurrentPosition())>10?left.getCurrentPosition()-right.getCurrentPosition():0;
@@ -80,21 +85,13 @@ public class LiftController {
         double denom = Math.max(leftPower, Math.max(rightPower, 1));
         left.setPower(leftPower / denom);
         right.setPower(rightPower / denom);
-        telemetry.addData("relativeError", motorRelativeError);
-        telemetry.addData("error", controller.getPositionError());
-        telemetry.addData("target", controller.getSetPoint());
-        telemetry.addData("power", power);
-        telemetry.addData("leftPos", left.getCurrentPosition());
-        telemetry.addData("pos2", getCurrentPosition());
-        telemetry.addData("pos", encoderTicksToCM(getCurrentPosition()));
-        //telemetry.update();
         if(controller.atSetPoint()){
             canOverride = true;
         }
     }
 
     public void setTarget(double newTarget){
-        target = newTarget * TICKS_PER_REV / WHEEL_RADIUS / 2 / Math.PI / GEAR_RATIO;
+        target = Math.min(newTarget * TICKS_PER_REV / WHEEL_RADIUS / 2 / Math.PI / GEAR_RATIO, MAX_TARGET);
         canOverride = false;
     }
 
