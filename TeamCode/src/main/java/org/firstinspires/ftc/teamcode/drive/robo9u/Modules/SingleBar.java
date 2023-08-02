@@ -10,9 +10,9 @@ public class SingleBar {
     public SafeServo leftServo, rightServo, wristServo;
 
     SingleBar(HardwareMap hw){
-        leftServo=hw.get(SafeServo.class,"rightLiftServo") ;
-        rightServo=hw.get(SafeServo.class,"leftLiftServo") ;
-        wristServo=hw.get(SafeServo.class, "wristServo");
+        leftServo = new SafeServo(hw,"rightLiftServo") ;
+        rightServo = new SafeServo(hw,"leftLiftServo") ;
+        wristServo = new SafeServo(hw,"wristServo");
     }
 
     public void Front(){

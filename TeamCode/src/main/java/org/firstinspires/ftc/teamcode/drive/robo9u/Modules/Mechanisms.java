@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class Mechanisms {
-    public Claw claw;
     public Lift lift;
     public ConeAligner coneAligner;
 
@@ -16,7 +15,7 @@ public class Mechanisms {
     public Mechanisms(HardwareMap hw)
     {
         coneAligner = new ConeAligner(hw);
-        claw = new Claw(hw);
         lift = new Lift(hw);
+        coneAligner.Up();
     }
 }

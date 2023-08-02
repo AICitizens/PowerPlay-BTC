@@ -6,17 +6,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.ModdedHardware.SafeServo;
 
 @Config
-public class ConeAligner {
-    public static double down = 0.75,  up = 0.4;
-    public SafeServo servo;
+public class JunctionGuide {
+    public static double down = 0.3,  up = 0.6;
+    SafeServo SafeServo;
 
-    ConeAligner(HardwareMap hw){
-        servo = new SafeServo(hw, "ConeAligner");
+    JunctionGuide(HardwareMap hw){
+        SafeServo = new SafeServo(hw, "guideServo");
     }
     public void Down(){
-        servo.setPosition(down);
+        SafeServo.setPosition(down);
     }
     public void Up(){
-        servo.setPosition(up);
+        SafeServo.setPosition(up);
     }
 }

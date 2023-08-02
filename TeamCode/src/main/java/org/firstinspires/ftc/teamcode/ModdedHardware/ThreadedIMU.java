@@ -18,6 +18,7 @@ public class ThreadedIMU {
     public ThreadedIMU(HardwareMap hardwareMap){
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
+        imu.resetYaw();
     }
     public void startImuThread(LinearOpMode opMode){
         synchronized (imuLock){

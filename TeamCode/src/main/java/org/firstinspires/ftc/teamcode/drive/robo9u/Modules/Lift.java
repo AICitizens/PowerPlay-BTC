@@ -24,7 +24,11 @@ public class Lift {
     private ElapsedTime singlebarTimer;
     public LiftController lift;
     public SingleBar singleBar;
-    public static double ground = 1, low = 17, mid = 43 , high = 69, stackConeDist = 3.55, stackPos;
+    private ElapsedTime clawTimer = new ElapsedTime();
+    public Claw claw;
+    public JunctionGuide junctionGuide;
+    public boolean isGuideDown = false;
+    public static double ground = 1, low = 16, mid = 42 , high = 68, stackConeDist = 3.55, stackPos;
 
     private boolean manualControl = false;
 
@@ -34,6 +38,7 @@ public class Lift {
 
     public void setLiftState(LiftState state){
         liftState = state;
+        clawTimer.reset();
         singlebarTimer.reset();
     }
 
@@ -69,8 +74,14 @@ public class Lift {
                 singleBar.Back();
                 break;
             case Ground:
-                lift.setTarget(ground);
-                singleBar.Front();
+                claw.Open();
+                if(clawTimer.milliseconds()>300) {
+                    if (isGuideDown) {
+                        lift.setTarget(30);
+                    }
+                    lift.setTarget(ground);
+                    singleBar.Front();
+                }
                 break;
             case Defence:
                 lift.setTarget(ground);
@@ -83,6 +94,13 @@ public class Lift {
             case Idle:
                 break;
         }
+        if((liftState != LiftState.Ground && liftState != LiftState.Defence && lift.encoderTicksToCM(lift.getCurrentPosition()) > 10) || ((liftState == LiftState.Ground || liftState == LiftState.Defence) && lift.encoderTicksToCM(lift.getCurrentPosition()) > 50) ){
+            junctionGuide.Down();
+            isGuideDown = true;
+        }else{
+            isGuideDown = false;
+            junctionGuide.Up();
+        }
         if(!manualControl)
             lift.update();
     }
@@ -90,6 +108,9 @@ public class Lift {
     public Lift(HardwareMap hw){
         lift = new LiftController(hw);
         singleBar = new SingleBar(hw);
+        claw = new Claw(hw);
+        junctionGuide = new JunctionGuide(hw);
+        junctionGuide.Up();
         stackPos = 5;
         singlebarTimer = new ElapsedTime();
         singlebarTimer.reset();

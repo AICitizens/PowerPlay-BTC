@@ -20,12 +20,12 @@ public class LiftController {
     public static double GEAR_RATIO = 1.8163; // output (wheel) speed / input (motor) speed
     public static double kp = 0.013, ki = 0, kd = 0.0005, ff = 0.00004, relativeP = 0.0005;
     public static double target = 0; //ticks
-    public static double MAX_TARGET = 2000, MAX_CURRENT = 8;
+    public static double MAX_TARGET = 2000, MAX_CURRENT = 250;
 
     private boolean canOverride = true;
 
     public SafeMotor left, right;
-    List<SafeMotor> motors = Arrays.asList(left, right);
+    List<SafeMotor> motors;
 
     public LiftController(HardwareMap hw) {
         controller = new PIDFController(kp, ki, kd, ff);
@@ -33,6 +33,7 @@ public class LiftController {
 
         left = new SafeMotor(hw, "liftLeft");
         right = new SafeMotor(hw, "liftRight");
+        motors = Arrays.asList(left, right);
 
         for(SafeMotor motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -95,7 +96,7 @@ public class LiftController {
         canOverride = false;
     }
 
-    public static double encoderTicksToCM(double ticks) {
+    public double encoderTicksToCM(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 }

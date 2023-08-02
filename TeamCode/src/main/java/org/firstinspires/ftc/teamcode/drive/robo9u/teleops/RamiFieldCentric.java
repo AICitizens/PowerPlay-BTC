@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.ModdedHardware.ThreadedIMU;
+import org.firstinspires.ftc.teamcode.drive.robo9u.Modules.Claw;
+import org.firstinspires.ftc.teamcode.drive.robo9u.Modules.ConeAligner;
 import org.firstinspires.ftc.teamcode.drive.robo9u.Modules.Lift;
 import org.firstinspires.ftc.teamcode.drive.robo9u.Modules.Mechanisms;
 
@@ -23,7 +25,8 @@ public class RamiFieldCentric extends LinearOpMode {
     private ThreadedIMU threadedIMU;
     private Mechanisms mecanisme;
     private ElapsedTime runtime;
-    private final GamepadEx gamepadEx = new GamepadEx(gamepad1);
+    private GamepadEx gamepad;
+    ElapsedTime clawTimer;
 
     public void initialize()
     {
@@ -34,60 +37,65 @@ public class RamiFieldCentric extends LinearOpMode {
         runtime = new ElapsedTime();
 
         mecanisme.lift.singleBar.Front();
-        mecanisme.claw.Open();
+        mecanisme.lift.claw.Open();
 
         PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         PhotonCore.experimental.setMaximumParallelCommands(8);
         PhotonCore.enable();
         PhotonCore.EXPANSION_HUB.clearBulkCache();
 
+        gamepad = new GamepadEx(gamepad1);
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     public void updateClaw()
     {
-        if(gamepadEx.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-            mecanisme.claw.Close();
-        }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
-            mecanisme.claw.Open();
+        if(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+            if (mecanisme.lift.claw.safeServo.getPosition() == Claw.closedPosition) {
+                mecanisme.lift.claw.Open();
+            } else {
+                mecanisme.lift.claw.Close();
+            }
         }
-        if(gamepadEx.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+        if(gamepad.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            if (mecanisme.coneAligner.servo.getPosition() == ConeAligner.up) {
+                mecanisme.coneAligner.Down();
+            } else {
+                mecanisme.coneAligner.Up();
+            }
+        }
+        if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
             mecanisme.lift.singleBar.Front();
-        }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+        }else if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
             mecanisme.lift.singleBar.Back();
         }
-        if(gamepadEx.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)){
-            mecanisme.coneAligner.Up();
-        }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
-            mecanisme.coneAligner.Down();
-        }
-        if(gamepadEx.wasJustPressed(GamepadKeys.Button.BACK))
+        if(gamepad.wasJustPressed(GamepadKeys.Button.BACK))
             mecanisme.lift.setLiftState(Lift.LiftState.Defence);
     }
 
     public void updateLift() {
-        mecanisme.lift.setPower(gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-        if (gamepadEx.wasJustPressed(GamepadKeys.Button.A)){ // auto control
+        mecanisme.lift.setPower(gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+        if (gamepad.wasJustPressed(GamepadKeys.Button.A)){ // auto control
             mecanisme.lift.setLiftState(Lift.LiftState.High);
-        }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.Y)){
+        }else if(gamepad.wasJustPressed(GamepadKeys.Button.Y)){
             mecanisme.lift.setLiftState(Lift.LiftState.Mid);
-        }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.B)){
+        }else if(gamepad.wasJustPressed(GamepadKeys.Button.B)){
             mecanisme.lift.setLiftState(Lift.LiftState.Low);
-        }else if(gamepadEx.wasJustPressed(GamepadKeys.Button.X)){
+        }else if(gamepad.wasJustPressed(GamepadKeys.Button.X)){
             mecanisme.lift.setLiftState(Lift.LiftState.Ground);
-            mecanisme.claw.Open();
+            mecanisme.lift.claw.Open();
         }
-        if(gamepadEx.wasJustPressed(GamepadKeys.Button.RIGHT_STICK_BUTTON)) {
+        if(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_STICK_BUTTON)) {
             mecanisme.lift.nextStack();
-            mecanisme.claw.Open();
+            mecanisme.lift.claw.Open();
         }
-
     }
     public void updatetelemetry(){
         telemetry.addLine("Running at " + 1e9/runtime.nanoseconds() + "hz");
-        telemetry.addLine("Current" + (PhotonCore.CONTROL_HUB.getCurrent(CurrentUnit.MILLIAMPS) + PhotonCore.EXPANSION_HUB.getCurrent(CurrentUnit.MILLIAMPS))/1000 + "amps");
+        telemetry.addLine("Current " + (PhotonCore.CONTROL_HUB.getCurrent(CurrentUnit.MILLIAMPS) + PhotonCore.EXPANSION_HUB.getCurrent(CurrentUnit.MILLIAMPS))/1000 + " amps");
+        telemetry.addData("lift amperage", mecanisme.lift.lift.left.getCurrent(CurrentUnit.AMPS)+mecanisme.lift.lift.right.getCurrent(CurrentUnit.AMPS));
         runtime.reset();
-        telemetry.update();
     }
 
     @Override
@@ -99,13 +107,15 @@ public class RamiFieldCentric extends LinearOpMode {
         while(!isStopRequested() && opModeIsActive())
         {
             PhotonCore.EXPANSION_HUB.clearBulkCache();
-            gamepadEx.readButtons();
-            if(gamepadEx.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) threadedIMU.resetYaw();
-            drive.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), threadedIMU.getYaw());
+            gamepad.readButtons();
+            if(gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) threadedIMU.resetYaw();
+            drive.driveFieldCentric(gamepad.getLeftX(), gamepad.getLeftY(), -gamepad.getRightX(), threadedIMU.getYaw());
+            telemetry.addData("yaw", threadedIMU.getYaw());
             updateClaw();
             updateLift();
             mecanisme.update();
             updatetelemetry();
+            telemetry.update();
         }
     }
 }

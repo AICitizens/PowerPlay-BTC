@@ -17,4 +17,8 @@ public class SafeServo {
             servo.setPosition(position);
         }
     }
+
+    public double getPosition(){
+        return servoPosition;
+    }
 }

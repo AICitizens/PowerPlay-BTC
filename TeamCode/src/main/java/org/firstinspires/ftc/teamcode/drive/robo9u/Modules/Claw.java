@@ -9,15 +9,15 @@ import org.firstinspires.ftc.teamcode.ModdedHardware.SafeServo;
 public class Claw {
     public static double closedPosition = 0.44,  openPosition = 0.275;
 
-    SafeServo SafeServo;
+    public SafeServo safeServo;
 
     Claw(HardwareMap hw){
-        SafeServo = new SafeServo(hw, "Gripper");
+        safeServo = new SafeServo(hw, "Gripper");
     }
     public void Close(){
-        SafeServo.setPosition(closedPosition);
+        safeServo.setPosition(closedPosition);
     }
     public void Open(){
-        SafeServo.setPosition(openPosition);
+        safeServo.setPosition(openPosition);
     }
 }
