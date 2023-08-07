@@ -17,7 +17,15 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
-    private double x, y, x2, denominator, LF, RF, LR, RR, drivepow = 1.0f;
+    private double x;
+    private double y;
+    private double x2;
+    private double denominator;
+    private double LF;
+    private double RF;
+    private double LR;
+    private double RR;
+    private final double drivepow = 1.0f;
 
     SampleMecanumDrive drive;
 
@@ -29,18 +37,17 @@ public class LocalizationTest extends LinearOpMode {
     }
 
     public void runOpMode() throws InterruptedException {
-        
 
-drive = new SampleMecanumDrive(hardwareMap);
-drive.imu.startImuThread(this);
-        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(0)));
+
+        drive = new SampleMecanumDrive(hardwareMap);
+        drive.imu.startImuThread(this);
+        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
 
-        while(!isStopRequested()) {
-            PhotonCore.CONTROL_HUB.clearBulkCache();
+        while (!isStopRequested()) {
             x2 = gamepad1.right_stick_x;
             y = -gamepad1.left_stick_y * 1.1;
             x = gamepad1.left_stick_x;

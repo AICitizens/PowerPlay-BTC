@@ -43,6 +43,6 @@ drive.imu.startImuThread(this);
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
 
-        while (!isStopRequested() && opModeIsActive()) ;
+        while (!isStopRequested() && opModeIsActive())   ;
     }
 }

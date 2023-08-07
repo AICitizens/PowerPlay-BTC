@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.drive;
+import android.util.Log;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.ModdedHardware.SafeMotor;
+import org.firstinspires.ftc.teamcode.drive.robo9u.ModdedHardware.SafeMotor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +24,7 @@ public class LiftController {
     public static double GEAR_RATIO = 1.8163; // output (wheel) speed / input (motor) speed
     public static double kp = 0.013, ki = 0, kd = 0.0005, ff = 0.00004, relativeP = 0.0005;
     public static double target = 0; //ticks
-    public static double MAX_TARGET = 2000, MAX_CURRENT = 250;
+    public static double MAX_TARGET = 1000000, MAX_CURRENT = 16.25;
 
     private boolean canOverride = true;
 
@@ -40,7 +44,7 @@ public class LiftController {
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
             motor.setMotorType(motorConfigurationType);
         }
-
+        target = 0;
         right.setDirection(DcMotorEx.Direction.FORWARD);
         left.setDirection(DcMotorEx.Direction.REVERSE);
     }
@@ -58,23 +62,27 @@ public class LiftController {
         right.setPower(power);
     }
 
+    public void stopAndResetEncoders(){
+        for (SafeMotor motor : motors) {
+            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
     public void stop(){
         target = getCurrentPosition();
     }
 
     double lastPos = 0;
     public void update(){
-        double deltaPos = getCurrentPosition()-lastPos;
         if(left.getCurrent(CurrentUnit.AMPS)+right.getCurrent(CurrentUnit.AMPS) > MAX_CURRENT) {
-            if(deltaPos < 0) {
+            Log.println(Log.WARN, "OVERCURRENT", "overcurrent lift" + left.getCurrent(CurrentUnit.AMPS)+right.getCurrent(CurrentUnit.AMPS));
+            if(getCurrentPosition()<0){
                 target = 0;
-                for (SafeMotor motor : motors) {
-                    motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-                    motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                }
-            }else {
+                stopAndResetEncoders();
+            }else{
+                target = lastPos;
                 MAX_TARGET = target;
-                target = getCurrentPosition()-deltaPos;
             }
         }
         controller.setPIDF(kp, ki, kd, ff);

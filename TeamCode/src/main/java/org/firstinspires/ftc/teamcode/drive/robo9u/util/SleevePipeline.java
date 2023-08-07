@@ -16,9 +16,9 @@ public class SleevePipeline extends OpenCvPipeline {
 
     private int sleeveIndex;
 
-    public static Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(190, 10);
-    public static int REGION_WIDTH = 80;
-    public static int REGION_HEIGHT = 40;
+    public static Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(50, 200);
+    public static int REGION_WIDTH = 30;
+    public static int REGION_HEIGHT = 45;
 
     private final Scalar
             YELLOW  = new Scalar(255, 255, 0),

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.robo9u.Modules;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.ModdedHardware.SafeServo;
+import org.firstinspires.ftc.teamcode.drive.robo9u.ModdedHardware.SafeServo;
 
 @Config
 public class JunctionGuide {

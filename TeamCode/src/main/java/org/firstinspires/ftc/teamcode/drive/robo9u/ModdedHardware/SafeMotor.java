@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ModdedHardware;
+package org.firstinspires.ftc.teamcode.drive.robo9u.ModdedHardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class SafeMotor {
     public DcMotorEx motor;
-    private double motorPower = -2;
+    private double motorPower = -1e7;
     public SafeMotor(HardwareMap hardwareMap, String name){
         motor = hardwareMap.get(DcMotorEx.class, name);
     }

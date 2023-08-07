@@ -25,7 +25,7 @@ public class Detection {
         camera.openCameraDeviceAsync( new OpenCvCamera.AsyncCameraOpenListener( ) {
             @Override
             public void onOpened( ) {
-                camera.startStreaming( 320,240, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming( 320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
             @Override
             public void onError( int errorCode ) {
