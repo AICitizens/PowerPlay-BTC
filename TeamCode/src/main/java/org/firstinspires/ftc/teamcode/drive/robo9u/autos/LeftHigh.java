@@ -24,9 +24,9 @@ public class LeftHigh extends LinearOpMode {
     Detection detection;
     TrajectorySequence fullTrajectory;
     Trajectory[] gotoPark = new Trajectory[3];
-    public static double averageXError = 0.75, averageYError = 0;
-    public static double junctionX = -31, junctionY = -18.5, junctionHeading = -45;
-    public static double stackX = -60, stackY = -11.5, stackHeading = 180.00;
+    public static double averageXError = 0.95, averageYError = -0.65;
+    public static double junctionX = -27.5, junctionY = -6.5, junctionHeading = 55;
+    public static double stackX = -61.5, stackY = -11.6, stackHeading = 180.00;
     int conesPlaced = 0;
     private boolean parking = false;
 
@@ -48,59 +48,66 @@ public class LeftHigh extends LinearOpMode {
 
         fullTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-35.02, -64.43, Math.toRadians(-90)))
                 .setReversed(true)
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->mecanisme.lift.setLiftState(Lift.LiftState.Mid))
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
-                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
+                //.UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .waitSeconds(0.3)
                 .setReversed(false)
                 .splineTo(stackVector, Math.toRadians(stackHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->mecanisme.lift.claw.Close())
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.Mid))
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Close())
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .setReversed(true)
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
-                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .waitSeconds(0.3)
                 .setReversed(false)
                 .splineTo(stackVector, Math.toRadians(stackHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->mecanisme.lift.claw.Close())
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.Mid))
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Close())
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .setReversed(true)
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
-                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .waitSeconds(0.3)
                 .setReversed(false)
                 .splineTo(stackVector, Math.toRadians(stackHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->mecanisme.lift.claw.Close())
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.Mid))
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Close())
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .setReversed(true)
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
-                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .waitSeconds(0.3)
                 .setReversed(false)
                 .splineTo(stackVector, Math.toRadians(stackHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->mecanisme.lift.claw.Close())
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.Mid))
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Close())
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .setReversed(true)
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
-                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .waitSeconds(0.3)
                 .setReversed(false)
                 .splineTo(stackVector, Math.toRadians(stackHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->mecanisme.lift.claw.Close())
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.Mid))
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Close())
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .setReversed(true)
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{mecanisme.lift.setLiftState(Lift.LiftState.Ground);drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.setLiftState(Lift.LiftState.Ground);drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .waitSeconds(0.4)
                 .build();
         drive.setPoseEstimate(fullTrajectory.start());
-        gotoPark[0] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(52.5, 28, Math.toRadians(-180))).build();
-        gotoPark[1] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(52.5,  -2, Math.toRadians(-180))).build();
-        gotoPark[2] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(52.5, -24, Math.toRadians(-180))).build();
+        gotoPark[0] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-27.5, -6.5, Math.toRadians(-90))).build();
+        gotoPark[1] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-3.5,  -6.5, Math.toRadians(-90))).build();
+        gotoPark[2] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(21.5, -6.5, Math.toRadians(-90))).build();
 
         PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         PhotonCore.experimental.setMaximumParallelCommands(8);

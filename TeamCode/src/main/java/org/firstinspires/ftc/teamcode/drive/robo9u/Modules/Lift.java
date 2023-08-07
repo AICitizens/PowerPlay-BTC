@@ -27,7 +27,7 @@ public class Lift {
     public SingleBar singleBar;
     private ElapsedTime timeSinceLastState = new ElapsedTime();
     public Claw claw;
-    public static double ground = 0.25, low = 16.5, mid = 42 , high = 67, stackConeDist = 3.55, stackPos, lastTarget, dropBy = 0;
+    public static double ground = 0.25, low = 16.5, mid = 43, high = 67, stackConeDist = 3.55, stackPos, lastTarget, dropBy = 0;
 
     private boolean manualControl = false;
 
@@ -72,35 +72,38 @@ public class Lift {
     public void update(){
         switch (liftState){
             case High:
+                lift.setTarget(high - dropBy);
                 if(timeSinceLastState.milliseconds() > 100)
-                    lift.setTarget(high - dropBy);
-                singleBar.setSingleBarState(SingleBar.SingleBarState.Back);
+                    singleBar.setSingleBarState(SingleBar.SingleBarState.Back);
                 break;
             case Mid:
+                lift.setTarget(mid - dropBy);
                 if(timeSinceLastState.milliseconds() > 100)
-                    lift.setTarget(mid - dropBy);
-                singleBar.setSingleBarState(SingleBar.SingleBarState.Back);
+                    singleBar.setSingleBarState(SingleBar.SingleBarState.Back);
                 break;
             case Low:
+                lift.setTarget(low - dropBy);
                 if(timeSinceLastState.milliseconds() > 100)
-                    lift.setTarget(low - dropBy);
-                singleBar.setSingleBarState(SingleBar.SingleBarState.Back);
+                    singleBar.setSingleBarState(SingleBar.SingleBarState.Back);
                 break;
             case Ground:
                 dropBy = 0;
                 lift.setTarget(ground);
-                singleBar.setSingleBarState(SingleBar.SingleBarState.Front);
+                if(timeSinceLastState.milliseconds() > 100)
+                    singleBar.setSingleBarState(SingleBar.SingleBarState.Front);
                 break;
             case Defence:
                 dropBy = 0;
                 claw.Close();
                 lift.setTarget(ground);
-                singleBar.setSingleBarState(SingleBar.SingleBarState.Up);
+                if(timeSinceLastState.milliseconds() > 100)
+                    singleBar.setSingleBarState(SingleBar.SingleBarState.Up);
                 break;
             case Stack:
                 dropBy = 0;
                 lift.setTarget(stackConeDist*stackPos + 0.2+ground);
-                singleBar.setSingleBarState(SingleBar.SingleBarState.Front);
+                if(timeSinceLastState.milliseconds() > 100)
+                    singleBar.setSingleBarState(SingleBar.SingleBarState.Front);
                 break;
             case Idle:
                 break;

@@ -35,22 +35,22 @@ public class SingleBar {
     public void update(){
         switch(singleBarState){
             case Front:
-                leftServo.setPosition(0.68);
-                rightServo.setPosition(0.32);
-                if(timeSinceLastStateChange.milliseconds() > 150)
-                    wristServo.setPosition(0.23);
+                    leftServo.setPosition(0.68);
+                    rightServo.setPosition(0.32);
+                    if (timeSinceLastStateChange.milliseconds() > 150)
+                        wristServo.setPosition(0.23);
                 break;
             case Up:
-                leftServo.setPosition(0.39);
-                rightServo.setPosition(0.61);
-                if(timeSinceLastStateChange.milliseconds() > 150)
-                    wristServo.setPosition(0.59);
+                    leftServo.setPosition(0.39);
+                    rightServo.setPosition(0.61);
+                    if (timeSinceLastStateChange.milliseconds() > 150)
+                        wristServo.setPosition(0.59);
                 break;
             case Back:
-                leftServo.setPosition(0.17);
-                rightServo.setPosition(0.83);
-                if(timeSinceLastStateChange.milliseconds() > 150)
-                    wristServo.setPosition(0.95);
+                    leftServo.setPosition(0.17);
+                    rightServo.setPosition(0.83);
+                    if (timeSinceLastStateChange.milliseconds() > 150)
+                        wristServo.setPosition(0.95);
                 break;
         }
     }
