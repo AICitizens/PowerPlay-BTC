@@ -24,7 +24,7 @@ public class LeftHigh extends LinearOpMode {
     Detection detection;
     TrajectorySequence fullTrajectory;
     Trajectory[] gotoPark = new Trajectory[3];
-    public static double averageXError = 0.95, averageYError = -0.65;
+    public static double averageXError = 0.75, averageYError = -0.8;
     public static double junctionX = -27.5, junctionY = -6.5, junctionHeading = 55;
     public static double stackX = -61.5, stackY = -11.6, stackHeading = 180.00;
     int conesPlaced = 0;
@@ -51,7 +51,7 @@ public class LeftHigh extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.25, ()->mecanisme.lift.setLiftState(Lift.LiftState.High))
                 .splineTo(junctionVector, Math.toRadians(junctionHeading))
                 .UNSTABLE_addTemporalMarkerOffset(0.1, ()->mecanisme.lift.claw.Open())
-                //.UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{mecanisme.lift.nextStack();drive.setPoseEstimate(drive.getPoseEstimate().minus(averageErrorPose));})
                 .waitSeconds(0.3)
                 .setReversed(false)
                 .splineTo(stackVector, Math.toRadians(stackHeading))
@@ -105,9 +105,9 @@ public class LeftHigh extends LinearOpMode {
                 .waitSeconds(0.4)
                 .build();
         drive.setPoseEstimate(fullTrajectory.start());
-        gotoPark[0] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-27.5, -6.5, Math.toRadians(-90))).build();
-        gotoPark[1] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-3.5,  -6.5, Math.toRadians(-90))).build();
-        gotoPark[2] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(21.5, -6.5, Math.toRadians(-90))).build();
+        gotoPark[0] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-61.5, -11.6, Math.toRadians(-90))).build();
+        gotoPark[1] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-37.5,  -11.6, Math.toRadians(-90))).build();
+        gotoPark[2] = drive.trajectoryBuilder(fullTrajectory.end()).lineToLinearHeading(new Pose2d(-13.5, -11.6, Math.toRadians(-90))).build();
 
         PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         PhotonCore.experimental.setMaximumParallelCommands(8);
